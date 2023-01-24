@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+header {
+  background-image: url('/public//bg-main-mobile.png');
+}
+
+.back-card {
+  background-image: url('/public/bg-card-back.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.front-card {
+  background-image: url('/public/bg-card-front.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.front-card--number {
+  text-align: justify;
+}
+
+.front-card--number::after {
+  content: "";
+  display: inline-block;
+  width: 100%;
+}
