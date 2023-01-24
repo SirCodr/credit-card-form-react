@@ -1,88 +1,80 @@
+import { useEffect, useState } from "react"
+import BackCard from "./components/BackCard"
+import FrontCard from "./components/FrontCard"
+import InlineInputGroup from "./components/InlineInputGroup"
+import InputGroup from "./components/InputGroup"
+import { ValidationError } from "./errors"
+import { isAnyNumber } from "./validation"
+
 function App() {
+  const [data, setData] = useState(() => ({
+    name: null,
+    cardNumber: null,
+    month: null,
+    year: null,
+    cvc: null,
+  }))
+
+  const [errors, setErrors] = useState({})
+
+  const handleChange = (e) => {
+    try {
+      const input = e.target
+      if (input.value == "") {
+        setErrors((prevState) => ({
+          ...prevState,
+          [input.name]: "Can´t be blank",
+        }))
+        // throw new ValidationError()
+      }else{
+        setErrors((prevState) => ({ ...prevState, [input.name]: undefined }))
+      }
+
+      setData((prevData) => ({ ...prevData, [input.name]: input.value }))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleSubmit = () => {}
+
   return (
     <div className="w-full h-screen grid grid-rows-4">
-      <div className="h-full row-start-1 row-end-2">
-        <img
-          src="bg-main-desktop.png"
-          alt="Imagen de fondo"
-          className="w-full h-full object-cover"
+      <header className="h-full row-start-1 row-end-2 relative">
+        <FrontCard cvc={data.cvc} />
+        <BackCard
+          name={data.name}
+          month={data.month}
+          year={data.year}
+          cardNumber={data.cardNumber}
         />
-      </div>
+      </header>
       <main className="row-start-2 row-end-5 flex justify-center">
-        <form className="w-11/12 h-full flex flex-col justify-center gap-y-5">
-          <section className="flex flex-col justify-center gap-y-2">
-            <label
-              htmlFor="input-name-id"
-              className="text-dark-violet font-medium text-sm uppercase"
-            >
-              cardholder name
-            </label>
-            <input
-              type="text"
-              name="input-name"
-              id="input-name-id"
-              placeholder="e.g. Jane Applesed"
-              className="outline-none border-grayish-violet-light border-2 rounded-md px-3 py-1 focus:border-dark-violet-gradient-from"
-            />
-          </section>
-          <section className="flex flex-col justify-center gap-y-2">
-            <label
-              htmlFor="input-card-id"
-              className="text-dark-violet font-medium text-sm uppercase"
-            >
-              card number
-            </label>
-            <input
-              type="text"
-              name="input-card"
-              id="input-card-id"
-              placeholder="e.g. 1234 5678 9123 0000"
-              className="outline-none border-grayish-violet-light border-2 rounded-md px-3 py-1 focus:border-dark-violet-gradient-from"
-            />
-          </section>
-
-          <div className="flex flex-row gap-x-2">
-            <section className="flex flex-col justify-center gap-y-2">
-              <label
-                htmlFor="input-month-date-id"
-                className="text-dark-violet font-medium text-sm uppercase"
-              >
-                exp. date (mm/yy)
-              </label>
-              <div className="flex gap-x-2">
-                <input
-                  type="number"
-                  name="input-month-date"
-                  id="input-month-date-id"
-                  placeholder="MM"
-                  className="outline-none border-grayish-violet-light border-2 rounded-md px-3 py-1 focus:border-dark-violet-gradient-from w-20"
-                />
-                <input
-                  type="number"
-                  name="input-year-date"
-                  id="input-year-date-id"
-                  placeholder="YY"
-                  className="outline-none border-grayish-violet-light border-2 rounded-md px-3 py-1 focus:border-dark-violet-gradient-from w-20"
-                />
-              </div>
-            </section>
-            <section className="flex flex-col justify-center gap-y-2 w-full">
-              <label
-                htmlFor="input-cvc-id"
-                className="text-dark-violet font-medium text-sm uppercase"
-              >
-                card number
-              </label>
-              <input
-                type="number"
-                name="input-cvc"
-                id="input-cvc-id"
-                placeholder="e.g. 123"
-                className="outline-none border-grayish-violet-light border-2 rounded-md px-3 py-1 focus:border-dark-violet-gradient-from"
-              />
-            </section>
-          </div>
-          <button className="w-full py-2 rounded-md bg-dark-violet text-white">Confirm</button>
+        <form
+          className="w-11/12 h-full flex flex-col justify-center gap-y-5"
+          onSubmit={handleSubmit}
+        >
+          <InputGroup
+            name="name"
+            title="cardholder name"
+            placeholder="e.g. Jane Applesed"
+            error={errors.name}
+            handleChange={handleChange}
+          />
+          <InputGroup
+            name="cardNumber"
+            title="card number"
+            placeholder="e.g. 1234 5678 9123 0000"
+            error={errors.cardNumber}
+            handleChange={handleChange}
+          />
+          <InlineInputGroup errors={errors} handleChange={handleChange} />
+          <button
+            type="submit"
+            className="w-full py-2 rounded-md bg-dark-violet text-white"
+          >
+            Confirm
+          </button>
         </form>
       </main>
     </div>
